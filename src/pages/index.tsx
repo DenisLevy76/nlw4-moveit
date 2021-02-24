@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { ChallengeBox } from '../components/ChallengeBox'
 import { CompleteChallengers } from '../components/CompleteChallengers'
 import { Countdown } from '../components/Countdown'
 import { ExpBar } from '../components/ExpBar'
@@ -10,6 +11,7 @@ export default function Home() {
     <div className={styles.container}>
       <Head>
         <title>Início | move.it</title>
+        
       </Head>
       <ExpBar/>
 
@@ -21,7 +23,7 @@ export default function Home() {
         </div>
 
         <div>
-
+          <ChallengeBox/>
         </div>
       </section>
     </div>
