@@ -1,5 +1,10 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import challenges from '../../challenges.json';
+import { CountdownContext } from "./CountdownContext";
+import Cookies from 'js-cookie';
+import { LevelUpModal } from "../components/LevelUpModal";
+
+
 
 interface Challenge {
   type: string;
@@ -9,7 +14,6 @@ interface Challenge {
 
 interface ChallengeContextData{
   level : number;
-  currentLevel : number;
   currentExp : number;
   challengesCompleted : Number;
   activeChallenge : Challenge;
@@ -17,25 +21,46 @@ interface ChallengeContextData{
   levelUp : () => void;
   startNewChallenge : () => void;
   resetChallenge : () => void;
+  completeChallenge : () => void;
+  closeModal : () => void;
+}
+
+interface ChallengesProviderProps{
+  children : ReactNode
+  level: number;
+  currentExp: number; 
+  challengesCompleted:number;
 }
 
 export const ChallengerContext = createContext({} as ChallengeContextData)
 
-interface ChallengesProviderProps{
-  children : ReactNode
-}
+export function ChallengesProvider({children, ...rest} : ChallengesProviderProps){
+  //ao passar um array vazio no useEffect ele sempre executa 1x assim que o componente é executado.
+  useEffect(() => {
+    Notification.requestPermission();
+  }, [])
 
-export function ChallengesProvider({children} : ChallengesProviderProps){
-  const [level, setLevel] = useState(1);
-  const [currentLevel, setCurrentLevel] = useState(0);
-  const [currentExp, setCurrentExp] = useState(143);
-  const [challengesCompleted, setChallengesCompleted] = useState(0);
+  const [level, setLevel] = useState(rest.level || 0);
+  const [currentExp, setCurrentExp] = useState(rest.currentExp || 0);
+  const [challengesCompleted, setChallengesCompleted] = useState(rest.challengesCompleted || 0);
   const [activeChallenge, setActiveChallenge] = useState(null);
+  const [isLevelUpModalOpen, setIsLevelUpModalOpen] = useState(false)
 
-  const expToNextLevel = Math.pow((level + 1) * 6,2)
+  const expToNextLevel = Math.pow((level + 1) * 6,2);
+  const expToNextLevelPreviw = (level) => Math.pow((level + 1) * 6,2);
 
   const levelUp = () => {
-    setLevel(level + 1);
+    const { amount } = activeChallenge;
+    let finalExp = amount + currentExp;
+    let finalLevel = level;
+    
+    while (finalExp >= expToNextLevelPreviw(finalLevel)){
+      finalExp = finalExp - expToNextLevelPreviw(finalLevel);
+      finalLevel += 1
+      setIsLevelUpModalOpen(true)
+      setLevel(finalLevel);
+    }
+    setCurrentExp(finalExp);
   }
 
   const startNewChallenge = () => {
@@ -43,26 +68,56 @@ export function ChallengesProvider({children} : ChallengesProviderProps){
     const challenge = challenges[randomChallengeIndex];
 
     setActiveChallenge(challenge);
+
+    if (Notification.permission === 'granted'){
+      new Notification('Novo desafio 🎉', {
+        body:`Valendo ${challenge.amount}exp!`
+      })
+      new Audio('/notification.mp3').play();
+    }
   }
 
   const resetChallenge = () => {
-    setActiveChallenge(null)
+    setActiveChallenge(null);
   }
+
+  const completeChallenge = () => {
+    if (!activeChallenge){
+      return;
+    }else{
+      levelUp();
+      resetChallenge();
+      setChallengesCompleted(challengesCompleted + 1);
+    }
+  }
+
+  const closeModal = () => {
+    setIsLevelUpModalOpen(false);
+  }
+
+  useEffect(() => {
+    Cookies.set('level', String(level));
+    Cookies.set('currentExp', String(currentExp));
+    Cookies.set('challengesCompleted', String(challengesCompleted));
+  }, [level, currentExp, challengesCompleted])
   
   return (
     <ChallengerContext.Provider value={{
         level,
-        currentLevel, 
         currentExp,
         challengesCompleted,
         activeChallenge,
         expToNextLevel,
         levelUp,
         startNewChallenge,
-        resetChallenge
+        resetChallenge,
+        completeChallenge,
+        closeModal
       }}
     >
       {children}
+
+      {isLevelUpModalOpen && <LevelUpModal />}
     </ChallengerContext.Provider>
   )
 }

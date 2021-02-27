@@ -1,7 +1,12 @@
 .expBar{
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+}
+
+@media(max-height: 700px){
+  .expBar{
+    margin-bottom: 2rem;
+  }
 }
 
 .expBar span{

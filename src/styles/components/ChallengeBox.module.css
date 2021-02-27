@@ -37,10 +37,12 @@
 .challengeBoxNotActive p{
   display: flex;
   margin-top: 2.5rem;
+  align-items: center;
 }
 
 .challengeBoxNotActive p img{
-  height: 80%;
+  height: 40%;
+  margin-right: 0.5rem;
 }
 
 .challengeBoxActive{
@@ -68,7 +70,6 @@
 }
 
 .challengeBoxActive main img{
-  /* margin-top: 2.375rem; */
   height: 8.75rem;
 }
 
