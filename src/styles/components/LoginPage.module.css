@@ -1,0 +1,30 @@
+.container{
+  height: 100vh;
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  background-color: var(--blue);
+}
+
+.container div:first-child {
+  background: url("/icons/biglogo.svg") no-repeat left;
+  width: 48rem;
+}
+
+@media(max-width: 1145px){
+  .container{
+    height: 100vh;
+    width: 100%;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container div:first-child {
+    width: 0px;
+  }
+}
