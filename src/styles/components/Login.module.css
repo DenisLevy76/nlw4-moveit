@@ -1,0 +1,90 @@
+.container{
+  height: 100vh;
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  background-color: var(--blue);
+}
+
+@media(min-width: 850px){
+  .container{
+    height: 100vh;
+    margin: auto;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+  
+    background-color: var(--blue);
+  }
+  .container div:first-child{
+    background: url("/icons/biglogo.svg") no-repeat left;
+    width: 100%;
+  }
+}
+
+.mainContainer{
+  display: flex;
+  flex-direction: column;
+
+  margin: auto;
+
+  align-items: baseline;
+  justify-content: center;
+}
+
+.mainContainer strong{
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 46px;
+
+  color: var(--white);
+
+  margin-top: 11rem;
+  margin-bottom: 1.5rem;
+}
+
+.mainContainer div{
+  display: flex;
+  align-items: center;
+}
+
+.title{
+  margin-bottom: 2.5rem;
+}
+
+.title img{
+  margin-right: 24px;
+}
+
+.title p{
+  color: var(--white);
+}
+
+.inputAndButton input{
+  border: none;
+  width: 21.25rem;
+  height: 5rem;
+  padding-left: 1.875rem;
+
+  color: var(--white);
+
+  border-radius: 5px 0px 0px 5px;
+  background: linear-gradient(90deg, #4953B8 0%, rgba(73, 83, 184, 0.2) 100%);
+}
+
+.inputAndButton button{
+  height: 5rem;
+  width: 5rem;
+
+  border-radius: 0px 5px 5px 0px;
+  border: none;
+  background-color: #4953B8;
+}
+
+.inputAndButton button:hover{
+  background-color: var(--green);
+}
